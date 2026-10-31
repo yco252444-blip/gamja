@@ -1,10 +1,12 @@
 // Oink 외형 — 레이저 아크릴 판 케이스(L 브래킷 + M3) + 마인크래프트풍 돼지 머리 센서
-// 사용자 결정(10/29) 기준. 아래부터 케이스 바닥판 → 스페이서 3 → 로드셀(5kg 막대형) → 스페이서 3 → 격자 받침판 3
-// → 단열판 5 → 육묘 패드 ≈3 → 방수판 0.5 → 3L 락앤락 A (흙, 똑바로) → 3L 뚜껑 10 → 돼지 머리
-// → 3L 락앤락 B (거꾸로 덮개) → 여유 top_gap 10 → 케이스 뚜껑. (방수 트레이·15mm 벽 없음)
+// 10/31 재설계: 챔버 = 12x12x12 통 2개, 히팅패드·방열판 Ø90 원형. 받침층 높이(30.2)·돼지 머리는 10/29 그대로.
+// 아래부터 케이스 바닥판 → 스페이서 3 → 로드셀(5kg 막대형) → 스페이서 3 → 격자 받침판 3
+// → 히팅패드 Ø90 ≈3 → 방열판 Ø90 5 → 방수판 0.5 → 통 A 12x12x12 (흙, 똑바로) → 통 A 뚜껑 10 → 돼지 머리
+// → 통 B 12x12x12 (거꾸로 덮개) → 여유 top_gap 10 → 케이스 뚜껑. (방수 트레이·15mm 벽 없음)
+// (변수 이름 lock3_* / "3L" 은 예전 3L 락앤락 시절 이름 그대로 둠 = 지금은 12x12x12 통)
 // 케이스 높이는 위 쌓은 높이 + 여유(top_gap 10)로 자동 계산. 통에는 케이블 구멍 없음.
 // → 통·뚜껑·머리 실측 후 lock3_h, lid_t, box_bot, hw/hh/hd 만 고치면 됨 (간섭·틈은 ECHO로 확인).
-// 치수 근거: 250x180 = 사용자 스케치, 패드 150x220 = 상품명. 높이들은 추정(미검증). 단위 mm.
+// 치수 근거: 통 12x12x12, 패드·방열판 Ø90 = 사용자(10/31). 두께들은 추정(미검증). 단위 mm.
 //
 // view = 1  전체 조립
 //        2  분해도 (스페이서·로드셀·격자판·멈춤 기둥·3L A·흙, 돼지 머리 + 거꾸로 덮은 3L B)
@@ -37,22 +39,23 @@ half = 0;                 // 위아래 조각: 0 = 둘 다(보기용), 1 = 아�
 side = 0;                 // 좌우 조각: 0 = 둘 다(보기용), 1 = 왼쪽, 2 = 오른쪽
 view = 1;                 // [1:10]
 
-/* [챔버 = 3L 락앤락 2개 — 실측 후 수정] */
-// 3L A(흙, 똑바로) → 3L 뚜껑 → (돼지 머리) → 3L B(거꾸로 덮개)
-chamber_w = 250;          // 통 윗면(테두리) 가로 (사용자 스케치)
-chamber_d = 180;          // 통 윗면(테두리) 깊이 (사용자 스케치)
-box_bot = [240, 170];     // 통 바닥 바깥 크기 (위가 넓은 통 가정, 추정·미검증)
-lock3_h = 99;             // 3L 통 높이 (추정, 미검증)
-lid_t = 10;               // 3L 뚜껑 두께 (사용자 확인 약 1cm)
+/* [챔버 = 12x12x12 통 2개 (10/31) — 실측 후 수정] */
+// 통 A(흙, 똑바로) → 통 A 뚜껑 → (돼지 머리) → 통 B(거꾸로 덮개)
+chamber_w = 120;          // 통 윗면 가로 (사용자 10/31: 12cm, 바깥 기준 가정)
+chamber_d = 120;          // 통 윗면 깊이
+box_bot = [120, 120];     // 통 바닥 바깥 크기 (곧은 벽 정육면체 가정, 미검증. 위가 넓은 통이면 줄일 것)
+lock3_h = 120;            // 통 높이 (사용자 12cm, 미검증)
+lid_t = 10;               // 통 A 뚜껑 두께 (예전 값 유지, 미검증)
 ch_wall = 3;              // 통 벽 두께 (가정)
 chamber_h = 2*lock3_h + lid_t;   // 통 A + 뚜껑 + 통 B
 soil_h = 50;              // 3L A 흙 높이 (가정). 탐침은 이 흙 가운데까지
 top_gap = 10;             // 거꾸로 놓은 3L B 위 ~ 케이스 뚜껑 여유 (10/29: 30 → 10)
-// 격자판 위: 단열판 → 육묘 패드 → 방수판 → 3L A 바닥이 눌러 밀착 (셋 다 구입품, 그림에선 얇은 유령)
-mat_w = 220;              // 육묘 패드 가로 (상품명 15x22cm)
-mat_d = 150;              // 육묘 패드 세로
-mat_t = 3;                // 패드 두께 (미검증)
-ins_t = 5;                // 단열판 (코르크/폼보드, 미검증)
+// 격자판 위: 히팅패드 Ø90 → 방열판 Ø90 → 방수판 → 통 A 바닥이 눌러 밀착 (셋 다 구입품, 그림에선 얇은 유령)
+// 층 두께는 10/29 값 그대로 (패드 3 + 방열판 5 + 방수 0.5 → 받침층 30.2 유지). 순서: 패드 열이 방열판으로 퍼져 통 바닥에 닿게 (가정)
+hp_d = 90;                // 히팅패드 지름 (사용자 10/31)
+mat_t = 3;                // 히팅패드 두께 (미검증)
+hs_d = 90;                // 방열판 지름 (사용자 10/31)
+hs_t = 5;                 // 방열판 두께 (예전 단열판 자리 높이 유지, 미검증)
 wp_t = 0.5;               // 방수판 (PET/PP 시트, 미검증)
 
 /* [여유] */
@@ -71,9 +74,9 @@ lc_pitch = 15;            // 같은 쪽 구멍 2개 간격 (미검증)
 lc_end = 7.5;             // 로드셀 끝 → 첫 구멍 중심 (미검증)
 lc_sp = 3;                // 스페이서 높이 (로드셀 양끝, 폭 = 로드셀 폭)
 lc_fix = 2*lc_end + lc_pitch;   // 스페이서 길이 (구멍 2개 가운데 정렬, 가운데 휨부는 비움)
-stop_s = 12;              // 기울기 멈춤 기둥 단면 (네모)
+stop_s = 12;              // 기울기 멈춤 기둥 단면 (네모). 10/31: 케이스가 작아져 모서리 대신 네 변 가운데 (바닥 L 브래킷과 겹침 방지)
 stop_gap = 1.5;           // 멈춤 기둥 윗면 ~ 격자판 아랫면 (평소 안 닿음)
-gp = [250, 180];          // 격자 받침판 크기 (통 바닥 250x180에 맞춤)
+gp = [120, 120];          // 격자 받침판 크기 (통 바닥 120x120에 맞춤, 10/31)
 gp_h = 3;                 // 격자판 높이 (리브·테두리, 받침 낮추기 10/29: 6 → 3)
 gp_rib = 3;               // 리브 두께
 gp_rim = 5;               // 바깥 테두리 폭
@@ -146,23 +149,23 @@ D = chamber_d + side_gap + elec_gap + 2*t;  // 케이스 바깥 깊이 (칸막�
 cy0 = t + elec_gap;                        // 챔버(통) 앞끝 y
 lc_z0 = lc_sp;                                  // 로드셀 아랫면 (바닥판 윗면 기준)
 cell_h = lc_z0 + lc_w + lc_sp;                  // 격자판 아랫면
-ins_z = t + cell_h + gp_h;                      // 단열판 아랫면
-pad_z = ins_z + ins_t;                          // 패드 아랫면
-wp_z = pad_z + mat_t;                           // 방수판 아랫면
+pad_z = t + cell_h + gp_h;                      // 히팅패드 아랫면 (격자판 윗면)
+hs_z = pad_z + mat_t;                           // 방열판 아랫면
+wp_z = hs_z + hs_t;                             // 방수판 아랫면
 boxA_z = wp_z + wp_t;                           // 3L A 바닥 (방수판에 얹힘)
 lock3_z = boxA_z + lock3_h + lid_t;             // 거꾸로 놓은 3L B 입구(아래끝) = 3L 뚜껑 윗면
 head_z = lock3_z;                               // 돼지 머리 바닥 = 3L 뚜껑 윗면
 H = (lock3_z + lock3_h - t) + top_gap;          // 벽판 높이 (바닥판 위)
 soil_z = boxA_z + ch_wall;                      // 흙 = 3L A 안쪽 바닥
 soil_max = lock3_h - ch_wall;                   // 흙 최대 깊이 (3L 뚜껑 밑까지)
-echo(str("받침층 ", boxA_z - t, " (스페이서 ", lc_sp, " + 로드셀 ", loadcell_kg, "kg ", lc_w, " + 스페이서 ", lc_sp, " + 격자 ", gp_h, " + 단열 ", ins_t, " + 패드 ", mat_t, " + 방수 ", wp_t, ")"));
+echo(str("받침층 ", boxA_z - t, " (스페이서 ", lc_sp, " + 로드셀 ", loadcell_kg, "kg ", lc_w, " + 스페이서 ", lc_sp, " + 격자 ", gp_h, " + 패드 Ø", hp_d, " ", mat_t, " + 방열판 Ø", hs_d, " ", hs_t, " + 방수 ", wp_t, ")"));
 echo(str("흙 깊이: 최대 ", soil_max, " (3L A 안쪽 바닥 ~ 뚜껑) / 지금 가정 ", soil_h));
 probe_tip_z = soil_z + soil_h/2;                // 탐침 끝 = 3L A 흙 가운데
 probe_l = head_z - probe_tip_z;                 // 머리 밑으로 나오는 탐침 길이 (3L 뚜껑 가운데 구멍으로)
 bx0 = t + side_gap + chamber_w/2;               // 받침 중심 (통 중심)
 by0 = cy0 + chamber_d/2;
 cable_z = t + (lc_z0 + (wp_z - t))/2;           // 왼쪽 판 케이블 구멍 높이 = 로드셀 아랫면 ~ 패드 윗면 가운데
-stop_xy = [for (sx = [-1, 1], sy = [-1, 1]) [sx*(gp[0]/2 - stop_s/2), sy*(gp[1]/2 - stop_s/2)]];   // 멈춤 기둥 중심 (격자판 모서리 밑)
+stop_xy = [[-(gp[0]/2 - stop_s/2), 0], [gp[0]/2 - stop_s/2, 0], [0, -(gp[1]/2 - stop_s/2)], [0, gp[1]/2 - stop_s/2]];   // 멈춤 기둥 중심 (격자판 네 변 가운데 밑, 10/31)
 stop_h = cell_h - stop_gap;                     // 멈춤 기둥 높이
 lc_mid_below = lc_z0;                           // 로드셀 가운데 밑 여유 (바닥판 윗면까지)
 lc_mid_above = cell_h - (lc_z0 + lc_w);         // 로드셀 가운데 위 여유 (격자판 아랫면까지)
@@ -450,9 +453,9 @@ module base_unit() {
     translate([lc_l/2 - lc_fix/2, 0, lc_z1]) bu_spacer();                                     // 위 스페이서 (반대쪽 끝)
     for (p = stop_xy) translate([p[0], p[1], 0]) bu_stop();                                   // 멈춤 기둥 4
     bu_grid();
-    // 구입품 (얇은 유령): 단열판 → 육묘 패드 → 방수판
-    color("#e8dcc0", 0.25) translate([-gp[0]/2, -gp[1]/2, ins_z - t]) cube([gp[0], gp[1], ins_t]);
-    color("#d0603a", 0.35) translate([-mat_w/2, -mat_d/2, pad_z - t]) cube([mat_w, mat_d, mat_t]);
+    // 구입품 (얇은 유령): 히팅패드 Ø90 → 방열판 Ø90 → 방수판
+    color("#d0603a", 0.35) translate([0, 0, pad_z - t]) cylinder(h = mat_t, d = hp_d, $fn = 64);
+    color("#b8c0c8", 0.6) translate([0, 0, hs_z - t]) cylinder(h = hs_t, d = hs_d, $fn = 64);
     color("#a8d0e0", 0.25) translate([-gp[0]/2, -gp[1]/2, wp_z - t]) cube([gp[0], gp[1], wp_t]);
 }
 
@@ -580,7 +583,7 @@ module plan_view() {
     color("#16302a") translate([W/2 - d_pcb[0]/2, t + tm_fl_t + boss_h, 0]) cube([d_pcb[0], d_pcb_t, 1]);
     // 글자
     color("#1d2420") {
-        translate([cx + chamber_w/2, cy + chamber_d/2, 0]) linear_extrude(1) text(str("락앤락 ", chamber_w, " x ", chamber_d), size = 8, font = KFONT, halign = "center", valign = "center");
+        translate([cx + chamber_w/2, cy + chamber_d/2, 0]) linear_extrude(1) text(str("통 ", chamber_w, " x ", chamber_d), size = 8, font = KFONT, halign = "center", valign = "center");
         translate([W/2, t + elec_gap/2 + 8, 0]) linear_extrude(1) text("전장 공간 (TFT · HX711 · 배선)", size = 5.5, font = KFONT, halign = "center", valign = "center");
         translate([W/2, -42, 0]) linear_extrude(1) text("앞 (LCD 쪽)", size = 7, font = KFONT, halign = "center");
     }
@@ -613,8 +616,8 @@ module side_view() {   // 옆에서 본 단면 (y-z 평면을 x-y로 눕혀 그�
     color("#7d8a82") for (sy = [-1, 1]) translate([by0 + sy*(gp[1]/2 - stop_s/2) - stop_s/2, t, 0]) cube([stop_s, stop_h, 1]);   // 멈춤 기둥
     color("#c9a87a") translate([by0 - lc_w/2, t + lc_z0, 0.1]) cube([lc_w, lc_w, 1]);   // 로드셀
     color("#9aa3a0") translate([by0 - gp[1]/2, t + cell_h, 0]) cube([gp[1], gp_h, 1]);  // 격자판
-    color("#e8dcc0") translate([by0 - gp[1]/2, ins_z, 0.1]) cube([gp[1], ins_t, 1]);
-    color("#d0603a") translate([by0 - mat_d/2, pad_z, 0.1]) cube([mat_d, mat_t, 1]);
+    color("#d0603a") translate([by0 - hp_d/2, pad_z, 0.1]) cube([hp_d, mat_t, 1]);   // 히팅패드 Ø90
+    color("#b8c0c8") translate([by0 - hs_d/2, hs_z, 0.1]) cube([hs_d, hs_t, 1]);     // 방열판 Ø90
     color("#5f9ec0") translate([by0 - gp[1]/2, wp_z, 0.1]) cube([gp[1], max(wp_t, 0.8), 1]);
     color("#c8463c") translate([0, cable_z - 5, 0.3]) cube([t, 10, 1]);   // 케이블 구멍 높이 (왼쪽 판, 전장 칸)
     color("#9cc3d8") taper(0, 0, boxA_z, false);   // 3L A
@@ -624,20 +627,20 @@ module side_view() {   // 옆에서 본 단면 (y-z 평면을 x-y로 눕혀 그�
     color("#f2b8c0") translate([by0 - hd/2, hb, 0.2]) cube([hd, hh, 1]);
     color("#b8bec2") translate([by0 - 3, probe_tip_z, 0.3]) cube([6, probe_l, 1]);
     color("#1d2420") {
-        translate([by0, soil_z + soil_h + 15, 0]) linear_extrude(1.2) text(str("3L A ", lock3_h, " / 흙"), size = 6, font = KFONT, halign = "center", valign = "center");
-        translate([by0 + 60, lock3_z + lock3_h - 12, 0]) linear_extrude(1.2) text("3L B 거꾸로", size = 5, font = KFONT, halign = "center", valign = "center");
+        translate([by0, soil_z + soil_h + 15, 0]) linear_extrude(1.2) text(str("통 A ", lock3_h, " / 흙"), size = 6, font = KFONT, halign = "center", valign = "center");
+        translate([by0 + 60, lock3_z + lock3_h - 12, 0]) linear_extrude(1.2) text("통 B 거꾸로", size = 5, font = KFONT, halign = "center", valign = "center");
         translate([by0, hb + hh/2, 0]) linear_extrude(1.2) text("돼지 머리", size = 6, font = KFONT, halign = "center", valign = "center");
-        translate([D + 44, t + 18, 0]) linear_extrude(1.2) text("스페이서·로드셀·격자판·단열·패드·방수", size = 4, font = KFONT, valign = "center");
+        translate([D + 44, t + 18, 0]) linear_extrude(1.2) text("스페이서·로드셀·격자판·패드·방열판·방수", size = 4, font = KFONT, valign = "center");
         translate([cy0/2 + 2, H/2, 0]) rotate([0, 0, 90]) linear_extrude(1.2) text("전장", size = 6, font = KFONT, halign = "center", valign = "center");
         translate([-30, -20, 0]) linear_extrude(1.2) text("← 앞", size = 7, font = KFONT);
     }
     dim_v(0, H + 2*t, -14, str("바깥 높이 ", H + 2*t));
     dim_v(t, boxA_z, D + 30, str("받침 ", boxA_z - t));
-    dim_v(boxA_z, boxA_z + lock3_h, D + 14, str("3L A ", lock3_h));
+    dim_v(boxA_z, boxA_z + lock3_h, D + 14, str("통 A ", lock3_h));
     dim_v(boxA_z + lock3_h, lock3_z, D + 30, str("뚜껑 ", lid_t));
-    dim_v(lock3_z, lock3_z + lock3_h, D + 14, str("3L B ", lock3_h));
+    dim_v(lock3_z, lock3_z + lock3_h, D + 14, str("통 B ", lock3_h));
     dim_v(lock3_z + lock3_h, t + H, D + 30, str("여유 ", top_gap));
-    dim_v(hb, hb + in3_h, cy - 10, str("3L 안 ", in3_h));
+    dim_v(hb, hb + in3_h, cy - 10, str("통 안 ", in3_h));
     dim_v(probe_tip_z, hb, cy + 16, str("탐침 ", probe_l));
     dim_h(0, D, H + 2*t + 12, str("바깥 깊이 ", D));
 }
@@ -667,7 +670,7 @@ module exploded_labeled() {
     ex = 110;                  // 벽판 빼는 거리
     Z0 = t + H + 90;           // 속 부품 시작 높이
     zs = [Z0, Z0 + 50, Z0 + 95, Z0 + 135, Z0 + 175, Z0 + 215, Z0 + 350, Z0 + 410, Z0 + 545, Z0 + 700];
-    // 0 로드셀층, 1 격자판, 2 단열, 3 패드, 4 방수, 5 3L A, 6 3L 뚜껑, 7 머리 바닥, 8 3L B, 9 뚜껑
+    // 0 로드셀층, 1 격자판, 2 히팅패드, 3 방열판, 4 방수, 5 통 A, 6 통 A 뚜껑, 7 머리 바닥, 8 통 B, 9 뚜껑
     cx = bx0; cy = by0;
     color(case_col) p_bottom();                                                                       // 15
     translate([0, -ex, 0]) { color("#4a5a66") tft_mount_placed(); display_module(); color(case_col, 0.35) p_front(); }   // 12 (벽판 반투명)
@@ -681,8 +684,8 @@ module exploded_labeled() {
         translate([lc_l/2 - lc_fix/2, 0, lc_z0 + lc_w]) bu_spacer();
     }
     translate([cx, cy, zs[1] - cell_h]) bu_grid();                                                    // 9
-    color("#e8dcc0") translate([cx - gp[0]/2, cy - gp[1]/2, zs[2]]) cube([gp[0], gp[1], ins_t]);      // 8
-    color("#d0603a") translate([cx - mat_w/2, cy - mat_d/2, zs[3]]) cube([mat_w, mat_d, mat_t]);      // 7
+    color("#d0603a") translate([cx, cy, zs[2]]) cylinder(h = mat_t, d = hp_d, $fn = 64);             // 히팅패드 Ø90
+    color("#b8c0c8") translate([cx, cy, zs[3]]) cylinder(h = hs_t, d = hs_d, $fn = 64);              // 방열판 Ø90
     color("#a8d0e0") translate([cx - gp[0]/2, cy - gp[1]/2, zs[4]]) cube([gp[0], gp[1], 1]);          // 6
     translate([cx, cy, zs[5]]) { color("#cfe3ee", 0.5) box3(false); color("#8a6a45") translate([-in3_w/2, -in3_d/2, ch_wall]) cube([in3_w, in3_d, soil_h]); }   // 5
     color("#5f9ec0", 0.8) translate([cx - chamber_w/2 - 2, cy - chamber_d/2 - 2, zs[6]]) cube([chamber_w + 4, chamber_d + 4, lid_t]);   // 4
@@ -694,7 +697,7 @@ module exploded_labeled() {
 // ---------- view 선택 ----------
 case_col = "#e7ebe6";
 if (view == 1) {
-    internals();   // 4L 통·뚜껑, 그 위 돼지 머리 + 거꾸로 덮은 3L
+    internals();   // 통 A·뚜껑, 그 위 돼지 머리 + 거꾸로 덮은 통 B
     color(case_col, 0.35) { p_bottom(); p_front(); p_back(); p_left(); p_right(); }   // 케이스는 반투명 (안 보이게)
     color("#dfe4de", 0.35) p_lid();
 }
