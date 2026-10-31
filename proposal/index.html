@@ -1,0 +1,1225 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI 기반 자율 미생물 관리 시스템 - 서비스 제안서</title>
+  <!-- Pretendard Font -->
+  <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+  <style>
+    :root {
+      /* Romantic Dusk & La La Land Aesthetic */
+      --bg-gradient: linear-gradient(135deg, #FFF5F8 0%, #F5F0FF 50%, #FFF8EF 100%);
+      --card-bg: rgba(255, 255, 255, 0.88);
+      --card-border: rgba(232, 93, 136, 0.18);
+      
+      --text-main: #231929;
+      --text-muted: #6E5D72;
+      
+      --pink-primary: #E85D88;
+      --purple-accent: #8B5CF6;
+      --mint-green: #10B981;
+      --yellow-accent: #F59E0B;
+      
+      --shadow-soft: 0 10px 30px rgba(139, 92, 246, 0.06);
+      --shadow-hover: 0 15px 35px rgba(232, 93, 136, 0.12);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: "Pretendard Variable", Pretendard, system-ui, sans-serif;
+      background: var(--bg-gradient);
+      background-attachment: fixed;
+      color: var(--text-main);
+      line-height: 1.65;
+      padding: 2.5rem 1rem;
+    }
+
+    .container {
+      max-width: 1040px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 2.5rem;
+    }
+
+    /* CARD BASE STYLE */
+    .glass-card {
+      background: var(--card-bg);
+      backdrop-filter: blur(14px);
+      border: 1px solid var(--card-border);
+      border-radius: 20px;
+      padding: 2.25rem;
+      box-shadow: var(--shadow-soft);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .glass-card:hover {
+      box-shadow: var(--shadow-hover);
+      border-color: rgba(232, 93, 136, 0.35);
+    }
+
+    /* HEADER */
+    header.glass-card {
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(255, 240, 245, 0.85));
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.45rem 1.1rem;
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--pink-primary);
+      background: #FFFFFF;
+      border: 1px solid rgba(232, 93, 136, 0.25);
+      border-radius: 30px;
+      margin-bottom: 1.2rem;
+    }
+
+    h1 {
+      font-size: 2.3rem;
+      font-weight: 800;
+      line-height: 1.35;
+      letter-spacing: -0.02em;
+      margin-bottom: 1rem;
+    }
+
+    h1 .highlight-pink { color: var(--pink-primary); }
+    h1 .highlight-purple { color: var(--purple-accent); }
+
+    .hero-desc {
+      font-size: 1.05rem;
+      color: var(--text-muted);
+      margin-bottom: 1.5rem;
+      word-break: keep-all;
+    }
+
+    .hero-box {
+      background: rgba(232, 93, 136, 0.05);
+      border-left: 4px solid var(--pink-primary);
+      padding: 1.1rem 1.3rem;
+      border-radius: 0 12px 12px 0;
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--text-main);
+    }
+
+    /* QUICK NAV BAR (가독성 증대) */
+    .quick-nav {
+      display: flex;
+      gap: 0.6rem;
+      overflow-x: auto;
+      padding: 0.5rem 0;
+      margin-top: -1rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .quick-nav a {
+      text-decoration: none;
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      background: rgba(255, 255, 255, 0.7);
+      border: 1px solid var(--card-border);
+      padding: 0.4rem 0.9rem;
+      border-radius: 20px;
+      white-space: nowrap;
+      transition: all 0.2s ease;
+    }
+
+    .quick-nav a:hover {
+      color: var(--pink-primary);
+      border-color: var(--pink-primary);
+      background: #FFFFFF;
+    }
+
+    /* SECTION TITLES */
+    .section-title-wrap {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .section-num {
+      font-family: monospace;
+      font-weight: 800;
+      font-size: 1rem;
+      color: var(--pink-primary);
+      background: rgba(232, 93, 136, 0.1);
+      padding: 0.25rem 0.65rem;
+      border-radius: 8px;
+    }
+
+    h2 {
+      font-size: 1.5rem;
+      font-weight: 800;
+      letter-spacing: -0.01em;
+    }
+
+    /* GRID LAYOUTS */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr));
+      gap: 1.5rem;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr));
+      gap: 1.25rem;
+    }
+
+    /* ARCHITECTURE DETAILS */
+    .arch-step {
+      background: #FFFFFF;
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 1.5rem;
+      margin-bottom: 1.25rem;
+      transition: all 0.2s ease;
+    }
+
+    .arch-step:last-child { margin-bottom: 0; }
+    .arch-step:hover {
+      border-color: var(--purple-accent);
+      box-shadow: 0 6px 18px rgba(139, 92, 246, 0.08);
+    }
+
+    .arch-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 0.8rem;
+    }
+
+    .arch-title {
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .arch-badge {
+      font-size: 0.75rem;
+      font-weight: 800;
+      padding: 0.2rem 0.65rem;
+      border-radius: 20px;
+    }
+
+    .badge-pink { background: #FFF0F5; color: var(--pink-primary); }
+    .badge-purple { background: #F5F0FF; color: var(--purple-accent); }
+    .badge-mint { background: #ECFDF5; color: var(--mint-green); }
+    .badge-yellow { background: #FFFBEB; color: var(--yellow-accent); }
+
+    .sensor-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(190px, 100%), 1fr));
+      gap: 0.75rem;
+      margin-top: 0.8rem;
+    }
+
+    .sensor-item {
+      background: #FDF8F5;
+      border: 1px solid rgba(232, 93, 136, 0.15);
+      border-radius: 10px;
+      padding: 0.8rem;
+      font-size: 0.85rem;
+    }
+
+    .sensor-item b {
+      color: var(--pink-primary);
+      display: block;
+      margin-bottom: 0.2rem;
+    }
+
+    /* APK DASHBOARD GRID (사진 내용) */
+    .apk-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr));
+      gap: 0.8rem;
+      margin-top: 0.8rem;
+    }
+
+    .apk-card {
+      background: linear-gradient(135deg, #FFFFFF, #FFF9FC);
+      border: 1px solid rgba(139, 92, 246, 0.15);
+      border-radius: 12px;
+      padding: 0.9rem 1.1rem;
+    }
+
+    .apk-card-title {
+      font-size: 0.88rem;
+      font-weight: 800;
+      color: var(--purple-accent);
+      margin-bottom: 0.25rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .apk-card-desc {
+      font-size: 0.83rem;
+      color: var(--text-muted);
+      line-height: 1.45;
+    }
+
+    /* REVENUE CARDS */
+    .rev-card {
+      background: #FFFFFF;
+      border-radius: 16px;
+      padding: 1.5rem;
+      border: 1px solid var(--card-border);
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .rev-badge {
+      align-self: flex-start;
+      font-size: 0.75rem;
+      font-weight: 800;
+      padding: 0.23rem 0.65rem;
+      border-radius: 20px;
+    }
+
+    .rev-1 .rev-badge { background: #FFF0F5; color: var(--pink-primary); }
+    .rev-2 .rev-badge { background: #F5F0FF; color: var(--purple-accent); }
+    .rev-3 .rev-badge { background: #ECFDF5; color: var(--mint-green); }
+
+    .rev-card h3 { font-size: 1.1rem; font-weight: 800; }
+    .rev-card p { font-size: 0.88rem; color: var(--text-muted); }
+
+    /* ESG DETAIL BOXES */
+    .esg-box {
+      background: #FFFFFF;
+      border-radius: 16px;
+      border: 1px solid var(--card-border);
+      padding: 1.5rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .esg-box h3 {
+      font-size: 1.15rem;
+      font-weight: 800;
+      margin-bottom: 0.8rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .esg-list {
+      padding-left: 1.2rem;
+      font-size: 0.92rem;
+      color: var(--text-muted);
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .esg-list b {
+      color: var(--text-main);
+    }
+
+    /* KPI TABLE STYLING */
+    .kpi-table-wrap {
+      overflow-x: auto;
+      margin-top: 1rem;
+      border-radius: 14px;
+      border: 1px solid var(--card-border);
+    }
+
+    .kpi-table {
+      width: 100%;
+      border-collapse: collapse;
+      background: #FFFFFF;
+      text-align: left;
+      font-size: 0.88rem;
+    }
+
+    .kpi-table th {
+      background: linear-gradient(135deg, rgba(232, 93, 136, 0.1), rgba(139, 92, 246, 0.1));
+      color: var(--text-main);
+      font-weight: 800;
+      padding: 0.9rem 1.1rem;
+      border-bottom: 1px solid var(--card-border);
+    }
+
+    .kpi-table td {
+      padding: 0.85rem 1.1rem;
+      border-bottom: 1px solid rgba(232, 93, 136, 0.08);
+      color: var(--text-muted);
+    }
+
+    .kpi-table tr:last-child td { border-bottom: none; }
+    .kpi-table td:first-child { font-weight: 700; color: var(--pink-primary); }
+
+    /* FOOTER */
+    footer {
+      text-align: center;
+      padding: 2rem 0;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+    }
+
+    /* MARKET BARS */
+    .market-wrap { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr)); gap: 1.5rem; align-items: center; }
+    .stat-row { display: flex; gap: 1rem; flex-wrap: wrap; }
+    .stat-tile { flex: 1 1 140px; background: #FFFFFF; border: 1px solid var(--card-border); border-radius: 14px; padding: 1rem 1.2rem; }
+    .stat-tile .num { font-size: 1.7rem; font-weight: 800; color: var(--pink-primary); line-height: 1.2; }
+    .stat-tile .label { font-size: 0.82rem; color: var(--text-muted); }
+    .bars { background: #FFFFFF; border: 1px solid var(--card-border); border-radius: 14px; padding: 1.2rem 1.3rem; display: flex; flex-direction: column; gap: 0.9rem; }
+    .bar-label { display: flex; justify-content: space-between; font-size: 0.85rem; font-weight: 700; margin-bottom: 0.3rem; }
+    .bar-label span:last-child { color: var(--text-muted); font-weight: 600; }
+    .bar-track { height: 14px; background: #F5F0FF; border-radius: 8px; overflow: hidden; }
+    .bar-fill { height: 100%; border-radius: 8px; }
+    .bar-note { font-size: 0.75rem; color: var(--text-muted); }
+
+    .info-card { background: #FFFFFF; padding: 1.4rem; border-radius: 16px; border: 1px solid var(--card-border); }
+    .info-card h3 { font-size: 1.08rem; margin-bottom: 0.6rem; word-break: keep-all; }
+    .info-card p, .info-card li { font-size: 0.92rem; color: var(--text-muted); word-break: keep-all; }
+    .info-card ul { padding-left: 1.2rem; display: flex; flex-direction: column; gap: 0.45rem; }
+    .lead { font-size: 0.98rem; color: var(--text-muted); margin-bottom: 1.25rem; word-break: keep-all; }
+    .lead b, .info-card b, .arch-content b { color: var(--text-main); }
+    .arch-content { font-size: 0.93rem; color: var(--text-muted); word-break: keep-all; }
+
+    /* 블록 종류 구분 라벨: 부품(분홍) · 동작 순서(보라) · 앱 기능(민트) */
+    .group-label { display: flex; align-items: center; gap: 0.45rem; font-size: 0.8rem; font-weight: 800; letter-spacing: 0.02em; margin: 1.2rem 0 0.1rem; }
+    .group-label::before { content: ""; width: 10px; height: 10px; border-radius: 3px; background: currentColor; }
+    .group-label.parts { color: var(--pink-primary); }
+    .group-label.steps { color: var(--purple-accent); }
+    .group-label.app { color: var(--mint-green); }
+    .group-label + .sensor-list, .group-label + .flow, .group-label + .apk-grid { margin-top: 0.5rem; }
+
+    .flow { display: flex; flex-wrap: wrap; align-items: stretch; gap: 0.5rem; margin-top: 1rem; }
+    .flow-step { flex: 1 1 150px; background: #F5F0FF; border: 1px dashed rgba(139, 92, 246, 0.45); border-radius: 10px; padding: 0.7rem 0.8rem; font-size: 0.82rem; color: var(--text-muted); }
+    .flow-step b { display: block; color: var(--purple-accent); font-size: 0.86rem; margin-bottom: 0.15rem; }
+    .flow-step .lib { display: block; margin-top: 0.45rem; padding-top: 0.4rem; border-top: 1px solid rgba(139, 92, 246, 0.2); font-size: 0.75rem; color: var(--text-muted); }
+    .flow-step .lib code { font-size: 0.74rem; background: #FFFFFF; color: var(--purple-accent); padding: 0.05rem 0.4rem; border-radius: 5px; font-weight: 700; }
+    .flow-arrow { display: flex; align-items: center; color: var(--purple-accent); font-weight: 800; }
+
+    .app-card { background: #ECFDF5; border-color: rgba(16, 185, 129, 0.3); }
+    .app-card .apk-card-title { color: #0E8F65; }
+
+
+    .diagram { background: #FFFFFF; border: 1px solid var(--card-border); border-radius: 16px; padding: 1rem; text-align: center; }
+    .diagram img { width: 100%; max-width: 820px; height: auto; border-radius: 10px; }
+    .diagram figcaption { font-size: 0.82rem; color: var(--text-muted); margin-top: 0.6rem; }
+
+    /* TEAM & CORE TECH */
+    .team-wrap { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr)); gap: 1rem; margin-top: 1.25rem; }
+    .team-box { background: #FFFFFF; border: 1px solid var(--card-border); border-radius: 14px; padding: 1rem 1.2rem; }
+    .team-box .team-label { font-size: 0.78rem; font-weight: 800; color: var(--text-muted); letter-spacing: 0.02em; margin-bottom: 0.45rem; }
+    .team-name { font-size: 1.35rem; font-weight: 800; color: var(--pink-primary); line-height: 1.2; }
+    .team-name small { font-size: 0.85rem; font-weight: 600; color: var(--text-muted); margin-left: 0.35rem; }
+    .chip-row { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.55rem; }
+    .chip { font-size: 0.82rem; font-weight: 700; padding: 0.3rem 0.75rem; border-radius: 20px; background: #F5F0FF; color: var(--purple-accent); }
+    .chip.member { background: #FFF0F5; color: var(--pink-primary); }
+    .chip.iot { background: #FFFBEB; color: #B7700A; }
+    .chip.ai { background: #F5F0FF; color: var(--purple-accent); }
+    .chip.pet { background: #ECFDF5; color: #0E8F65; }
+
+    /* APP FEATURES */
+    .app-feature-title { font-size: 1.05rem; font-weight: 800; margin: 1.5rem 0 0.75rem; color: var(--text-main); }
+    .app-feature-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 0.9rem; }
+    .apk-grid.edge-grid { grid-template-columns: repeat(4, 1fr); }
+    @media (max-width: 960px) {
+      /* 5개 카드를 3 + 2로 나눠 한 장만 남는 줄이 생기지 않게 함 */
+      .app-feature-grid { grid-template-columns: repeat(6, 1fr); }
+      .app-feature-grid > .apk-card { grid-column: span 2; }
+      .app-feature-grid > .apk-card:nth-last-child(-n+2) { grid-column: span 3; }
+      .apk-grid.edge-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 600px) {
+      .app-feature-grid, .apk-grid.edge-grid { grid-template-columns: 1fr; }
+      .app-feature-grid > .apk-card, .app-feature-grid > .apk-card:nth-last-child(-n+2) { grid-column: auto; }
+    }
+    .diag-sample { margin-top: 0.55rem; background: #FFFFFF; border: 1px solid rgba(16, 185, 129, 0.35); border-radius: 10px; padding: 0.5rem 0.7rem; font-size: 0.8rem; font-weight: 700; color: #0E8F65; }
+    .self-control { margin-top: 1.25rem; background: rgba(139, 92, 246, 0.06); border-left: 4px solid var(--purple-accent); padding: 1rem 1.2rem; border-radius: 12px; font-size: 0.93rem; color: var(--text-muted); word-break: keep-all; }
+    .self-control b { color: var(--text-main); }
+
+    /* CO2 ↔ 활성도 */
+    .sub-title { font-size: 1.05rem; font-weight: 800; margin: 1.75rem 0 0.75rem; color: var(--text-main); }
+    .formula { background: #FFFFFF; border: 1px dashed rgba(16, 185, 129, 0.5); border-radius: 12px; padding: 0.9rem 1.1rem; font-size: 0.95rem; font-weight: 700; text-align: center; color: #0E8F65; margin-bottom: 0.9rem; word-break: keep-all; }
+    .formula small { display: block; font-size: 0.8rem; font-weight: 600; color: var(--text-muted); margin-top: 0.25rem; }
+    .state-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(220px, 100%), 1fr)); gap: 0.8rem; }
+    .state-card { background: #FFFFFF; border: 1px solid var(--card-border); border-top: 4px solid var(--mint-green); border-radius: 12px; padding: 0.9rem 1rem; font-size: 0.85rem; color: var(--text-muted); word-break: keep-all; }
+    .state-card b { display: block; color: var(--text-main); font-size: 0.92rem; margin-bottom: 0.3rem; }
+    .state-card .sig { display: block; margin-top: 0.45rem; font-size: 0.8rem; font-weight: 700; color: var(--purple-accent); }
+    .state-card.warn { border-top-color: var(--yellow-accent); }
+    .state-card.bad { border-top-color: var(--pink-primary); }
+    .note { font-size: 0.8rem; color: var(--text-muted); margin-top: 0.7rem; word-break: keep-all; }
+
+    /* AI 입력 → 모델 → 출력 */
+    .io-row { display: grid; grid-template-columns: 1fr auto 1fr auto 1fr; gap: 0.6rem; align-items: stretch; }
+    .io-box { background: #FFFFFF; border: 1px solid rgba(139, 92, 246, 0.25); border-radius: 12px; padding: 0.9rem 1rem; font-size: 0.85rem; color: var(--text-muted); }
+    .io-box h4 { font-size: 0.9rem; color: var(--purple-accent); margin-bottom: 0.4rem; }
+    .io-box ul { padding-left: 1.1rem; display: flex; flex-direction: column; gap: 0.25rem; }
+    .io-arrow { display: flex; align-items: center; color: var(--purple-accent); font-weight: 800; }
+    @media (max-width: 760px) { .io-row { grid-template-columns: 1fr; } .io-arrow { justify-content: center; transform: rotate(90deg); } }
+
+    /* 실험 계획 */
+    .exp-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr)); gap: 1rem; }
+    .exp-arm { background: #FFFFFF; border: 1px solid var(--card-border); border-radius: 14px; padding: 1.1rem 1.2rem; font-size: 0.88rem; color: var(--text-muted); word-break: keep-all; }
+    .exp-arm h4 { font-size: 0.98rem; margin-bottom: 0.4rem; color: var(--text-main); }
+    .exp-arm.a h4 span { color: var(--text-muted); }
+    .exp-arm.b h4 span { color: var(--pink-primary); }
+    .pending { display: inline-block; font-size: 0.75rem; font-weight: 800; padding: 0.15rem 0.6rem; border-radius: 20px; background: #FFFBEB; color: #B7700A; margin-left: 0.4rem; vertical-align: middle; }
+
+    /* 앱 목업 */
+    .mock-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(230px, 100%), 1fr)); gap: 1.25rem; justify-items: center; margin-top: 0.5rem; }
+    .mock-item { display: flex; flex-direction: column; align-items: center; gap: 0.6rem; }
+    .mock-item > span { font-size: 0.82rem; font-weight: 700; color: var(--text-muted); }
+    .phone { width: 240px; background: #1F1F24; border-radius: 36px; padding: 9px; box-shadow: 0 14px 30px rgba(35, 25, 41, 0.18); }
+    .screen { background: #F3F8F1; border-radius: 28px; height: 510px; padding: 0.7rem 0.85rem 0; display: flex; flex-direction: column; gap: 0.6rem; overflow: hidden; color: #24352A; font-size: 0.75rem; }
+    .status-bar { display: flex; justify-content: space-between; font-size: 0.68rem; font-weight: 700; }
+    .app-top { display: flex; justify-content: space-between; align-items: center; font-weight: 900; font-size: 1rem; letter-spacing: -0.02em; }
+    .app-top i { font-style: normal; font-size: 0.9rem; opacity: 0.6; }
+    .hero-pet { background: #FFFFFF; border-radius: 18px; padding: 0.7rem; text-align: center; }
+    .hero-pet p { font-weight: 800; font-size: 0.82rem; line-height: 1.35; margin-top: 0.2rem; }
+    .pill { display: inline-block; margin-top: 0.4rem; font-size: 0.68rem; font-weight: 800; padding: 0.2rem 0.7rem; border-radius: 20px; background: #DCF3E2; color: #2E7D4F; }
+    .pill.warn { background: #FFF1D6; color: #B7700A; }
+    .tiles { display: grid; grid-template-columns: 1fr 1fr; gap: 0.45rem; }
+    .tile { background: #FFFFFF; border-radius: 12px; padding: 0.5rem 0.55rem; }
+    .tile b { display: block; font-size: 0.95rem; font-weight: 800; }
+    .tile b small { font-size: 0.62rem; font-weight: 700; }
+    .tile span { font-size: 0.64rem; color: #6B7C70; }
+    .tile.alert b { color: #C2410C; }
+    .tabbar { margin-top: auto; display: flex; justify-content: space-around; background: #FFFFFF; margin-left: -0.85rem; margin-right: -0.85rem; padding: 0.6rem 0 0.8rem; font-size: 0.9rem; }
+    .tabbar span { opacity: 0.4; }
+    .tabbar span.on { opacity: 1; }
+    .msg { background: #FFFFFF; border-radius: 14px; padding: 0.6rem 0.7rem; }
+    .msg b { display: block; font-size: 0.78rem; margin-bottom: 0.15rem; }
+    .msg ol { padding-left: 1rem; display: flex; flex-direction: column; gap: 0.15rem; color: #4A5B50; }
+    .mini-chart { background: #FFFFFF; border-radius: 14px; padding: 0.6rem 0.7rem; }
+    .mini-chart svg { width: 100%; height: auto; display: block; }
+    .legend { display: flex; gap: 0.7rem; font-size: 0.62rem; color: #6B7C70; margin-top: 0.3rem; }
+    .legend i { display: inline-block; width: 8px; height: 8px; border-radius: 2px; margin-right: 0.25rem; vertical-align: middle; }
+  </style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- QUICK NAVIGATION BAR -->
+  <nav class="quick-nav">
+    <a href="#section-market">01. 배경 및 시장</a>
+    <a href="#section-problem">02. 문제 정의</a>
+    <a href="#section-solution">03. 솔루션 개요</a>
+    <a href="#section-arch">04. 프로젝트 상세</a>
+    <a href="#section-algo">05. 통합 제어 알고리즘</a>
+    <a href="#section-verify">06. 절전 효과 검증</a>
+    <a href="#section-effect">07. 기대 효과 & 차별성</a>
+  </nav>
+
+  <!-- HEADER -->
+  <header class="glass-card">
+    <div class="badge">✨ 서비스 제안서 · AI 기반 스마트 홈 에코 가전</div>
+    <h1>🦠 <span class="highlight-pink">AI 기반 자율</span> <span class="highlight-purple">미생물 관리 시스템</span></h1>
+    <p class="hero-desc">
+      미생물 관리와 음식물 처리기의 히터 발열을 어플과 연동하여 제어합니다. AI가 미생물의 상태를 스스로 관리해 사용자의 부담을 줄이고, 심부 온도 기반 정밀 제어로 불필요한 전력 소비까지 줄여 미생물 음식물 처리기의 진입장벽을 낮춥니다.
+    </p>
+    <div class="hero-box">
+      💡 "AI가 복잡한 관리를 전담함으로써, 사용자의 미생물 관리에 대한 부담을 덜어주고 최적의 전력 제어로 전기 요금 부담까지 낮춥니다."
+    </div>
+
+    <div class="team-wrap">
+      <div class="team-box">
+        <div class="team-label">TEAM</div>
+        <div class="team-name">오잉크 <small>OINK</small></div>
+        <div class="chip-row">
+          <span class="chip member">이은수</span>
+          <span class="chip member">이민서</span>
+          <span class="chip member">김혜주</span>
+          <span class="chip member">오유찬</span>
+          <span class="chip member">고은표</span>
+        </div>
+      </div>
+      <div class="team-box">
+        <div class="team-label">핵심 기술</div>
+        <div class="chip-row">
+          <span class="chip iot">📡 IoT 센서 · 원격 연동</span>
+          <span class="chip ai">🧠 온디바이스 AI 진단</span>
+          <span class="chip iot">🔥 자체 히터 정밀 제어</span>
+          <span class="chip pet">👾 반려 미생물 캐릭터 키우기</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- SECTION 01: MARKET -->
+  <section class="glass-card" id="section-market">
+    <div class="section-title-wrap">
+      <span class="section-num">01</span>
+      <h2>배경 및 시장 (Background & Market)</h2>
+    </div>
+
+    <p class="lead">
+      최근 <b>1인 가구의 증가</b>에 따라 가사 노동 절감에 대한 수요가 증가하여, 가정용 미생물 음식물 처리기는 하나의 <b>필수 가전</b>으로 자리 잡아가고 있습니다.
+    </p>
+
+    <div class="market-wrap">
+      <div class="stat-row">
+        <div class="stat-tile">
+          <div class="num">1,850억 원</div>
+          <div class="label">2025년 국내 시장 규모</div>
+        </div>
+        <div class="stat-tile">
+          <div class="num" style="color: var(--purple-accent);">+78%</div>
+          <div class="label">전년 대비 성장률</div>
+        </div>
+        <div class="stat-tile">
+          <div class="num" style="color: var(--mint-green);">≈ 선풍기</div>
+          <div class="label">약 2,000억 원 규모의 선풍기 시장과 비슷한 수준</div>
+        </div>
+      </div>
+
+      <div class="bars" role="img" aria-label="시장 규모 비교: 2024년 음식물 처리기 약 1,040억 원, 2025년 1,850억 원, 선풍기 시장 약 2,000억 원">
+        <div>
+          <div class="bar-label"><span>미생물 음식물 처리기 (2024, 추정)</span><span>약 1,040억</span></div>
+          <div class="bar-track"><div class="bar-fill" style="width: 52%; background: #F4A9C0;"></div></div>
+        </div>
+        <div>
+          <div class="bar-label"><span>미생물 음식물 처리기 (2025)</span><span>1,850억</span></div>
+          <div class="bar-track"><div class="bar-fill" style="width: 92.5%; background: var(--pink-primary);"></div></div>
+        </div>
+        <div>
+          <div class="bar-label"><span>선풍기 시장</span><span>약 2,000억</span></div>
+          <div class="bar-track"><div class="bar-fill" style="width: 100%; background: var(--purple-accent);"></div></div>
+        </div>
+        <div class="bar-note">※ 2024년 수치는 2025년 규모와 성장률(78%)로 역산한 추정값</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 02: PROBLEM DEFINITION -->
+  <section class="glass-card" id="section-problem">
+    <div class="section-title-wrap">
+      <span class="section-num">02</span>
+      <h2>문제 정의 (Problem Definition)</h2>
+    </div>
+
+    <div class="grid-2">
+      <div class="info-card">
+        <h3 style="color: var(--purple-accent);">🧫 1) 미생물 관리를 온전히 사용자에게 의존</h3>
+        <ul>
+          <li>가사 노동 절감을 내세운 제품임에도 불구하고, <b>미생물 관리를 온전히 사용자에게 맡긴다</b>는 한계가 있습니다.</li>
+          <li>사용자는 미생물의 상태 변화를 알기 어려워 대응이 늦어지고, 결국 미생물이 사멸하는 위험에 노출됩니다.</li>
+        </ul>
+      </div>
+
+      <div class="info-card">
+        <h3 style="color: var(--pink-primary);">⚡ 2) 24시간 돌아가는 히터의 에너지 과소비</h3>
+        <ul>
+          <li><b>내부 온도와 관계없이</b> 미생물의 활성 온도를 유지하기 위해 히터가 24시간 내내 돌아갑니다.</li>
+          <li>공기 온도나 표면 온도만 측정하는 방식으로는 음식물 내부의 실제 온도를 파악하기 어려워, <b>필요한 수준 이상으로 히터가 가동</b>될 수 있습니다.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 03: SOLUTION OVERVIEW -->
+  <section class="glass-card" id="section-solution">
+    <div class="section-title-wrap">
+      <span class="section-num">03</span>
+      <h2>솔루션 개요 (Solution Overview)</h2>
+    </div>
+
+    <p class="lead">
+      이러한 문제점을 해결하기 위해 미생물의 상태를 스스로 관리해주는 <b>"AI 기반 자율 미생물 관리 시스템"</b>을 설계하였습니다. 이 시스템을 통해 미생물 음식물 처리기에 대한 사용자 부담을 줄이고 진입장벽을 낮추는 역할을 할 수 있습니다.
+    </p>
+
+    <div class="grid-2">
+      <div class="info-card">
+        <h3 style="color: var(--mint-green);">🌱 미생물 관리 기능</h3>
+        <p>
+          미생물이 음식물을 분해할 때 방출하는 <b>이산화탄소의 양</b>을 측정하여 분해 활성도를 분석합니다. 측정된 수치가 기준치를 벗어나면 사용자에게 알림을 보내고, 센서값들을 분석하여 <b>최적의 해결방법</b>을 제시합니다. 이로써 사용자가 미생물의 상태 변화를 조기에 파악하고 대응하여, 미생물의 사멸 위험을 줄일 수 있습니다.
+        </p>
+      </div>
+      <div class="info-card">
+        <h3 style="color: var(--yellow-accent);">🔥 히터 발열 제어 기능</h3>
+        <p>
+          음식물 내부의 온도를 반영하여 히터 작동을 정밀하게 조절합니다. <b>심부 온도 센서</b>를 활용해 미생물 내부의 온도를 측정하여 보다 정밀한 제어를 가능하게 합니다. 이를 통해 미생물 활동에 적합한 온도를 유지하면서 <b>과도한 가열과 불필요한 전력 소비</b>를 줄입니다.
+        </p>
+      </div>
+    </div>
+
+    <h3 class="sub-title">🫧 왜 CO₂로 미생물 활성도를 알 수 있나</h3>
+    <div class="formula">
+      음식물(유기물) + 산소 → <b>CO₂</b> + 물 + <b>열</b>
+      <small>미생물이 음식물을 분해하는 과정은 곧 '호흡'입니다. 분해가 활발할수록 같은 시간에 더 많은 CO₂와 열이 나옵니다.</small>
+    </div>
+    <p class="lead" style="margin-bottom: 0.9rem;">
+      그래서 CO₂ 발생 속도는 퇴비화 분야에서도 <b>미생물 호흡 활성도를 재는 대표 지표</b>로 쓰입니다. Oink는 CO₂ 농도의 절댓값이 아니라 <b>증가 속도(ppm/분)</b>를 보고, 심부 온도와 가스 센서를 함께 읽어 아래처럼 상태를 구분합니다.
+    </p>
+    <div class="state-grid">
+      <div class="state-card">
+        <b>🟢 활발히 분해 중</b>
+        음식물 투입 뒤 CO₂가 빠르게 오르고, 심부 온도도 스스로 오릅니다.
+        <span class="sig">CO₂ 상승 ↑ · 심부 온도 ↑ · 가스 낮음</span>
+      </div>
+      <div class="state-card warn">
+        <b>🟡 활성 저하</b>
+        먹이가 부족하거나 온도·수분이 맞지 않아 호흡이 줄어든 상태입니다.
+        <span class="sig">CO₂ 상승 거의 없음 · 심부 온도 ↓</span>
+      </div>
+      <div class="state-card bad">
+        <b>🔴 부패(혐기화) 의심</b>
+        산소가 부족해 미생물이 제대로 숨 쉬지 못하고 부패 가스가 생깁니다.
+        <span class="sig">CO₂ 정체 · 부패 가스 ↑</span>
+      </div>
+      <div class="state-card">
+        <b>✅ 분해 완료</b>
+        분해할 먹이가 줄어들면 CO₂가 다시 기준선으로 내려옵니다.
+        <span class="sig">CO₂ 기준선 복귀 · 히터 대기 전환</span>
+      </div>
+    </div>
+    <p class="note">※ 상태별 기준값(ppm/분, ℃)은 시제품 실측 데이터로 정합니다. 현재 값은 확정 전입니다.</p>
+
+    <h3 class="app-feature-title">📱 어플에서 할 수 있는 것</h3>
+    <div class="app-feature-grid">
+      <div class="apk-card app-card">
+        <div class="apk-card-title">📊 실시간 상태 확인</div>
+        <div class="apk-card-desc">CO₂ · 부패 가스 · 심부 온도 · 소비 전력을 뚜껑을 열지 않고 언제 어디서든 확인</div>
+      </div>
+      <div class="apk-card app-card">
+        <div class="apk-card-title">📝 한 줄 요약 진단 카드</div>
+        <div class="apk-card-desc">LLM 없이, 센서값과 온디바이스 AI 판단 결과를 정해진 규칙으로 한 줄 진단 카드로 요약</div>
+        <div class="diag-sample">"분해 활성도 정상 · 수분이 조금 많아요"</div>
+      </div>
+      <div class="apk-card app-card">
+        <div class="apk-card-title">🔔 이상 알림 · 해결책 안내</div>
+        <div class="apk-card-desc">기준치를 벗어나면 푸시 알림과 함께 "음식물 투입 줄이기" 같은 구체적인 해결 방법을 안내</div>
+      </div>
+      <div class="apk-card app-card">
+        <div class="apk-card-title">👾 반려 미생물 키우기</div>
+        <div class="apk-card-desc">미생물 상태에 따라 표정과 움직임이 바뀌는 캐릭터를 돌보며 자연스럽게 관리 습관 형성</div>
+      </div>
+      <div class="apk-card app-card">
+        <div class="apk-card-title">⚡ 전력 사용량 확인</div>
+        <div class="apk-card-desc">히터 가동 시간과 절전 모드로 아낀 전력을 한눈에 확인</div>
+      </div>
+    </div>
+
+    <h3 class="sub-title">📲 앱 화면 목업</h3>
+    <div class="mock-row">
+      <!-- 홈 -->
+      <div class="mock-item">
+        <div class="phone"><div class="screen">
+          <div class="status-bar"><span>9:41</span><span>▂▄▆ ▮</span></div>
+          <div class="app-top">OINK.<i>⚙</i></div>
+          <div class="hero-pet">
+            <svg viewBox="0 0 120 100" width="120" height="100" aria-hidden="true">
+              <path d="M60 22 C58 12 50 8 42 10 C46 16 52 20 60 22 Z" fill="#7CC26B"/>
+              <path d="M60 22 C62 10 72 6 80 9 C76 16 68 21 60 22 Z" fill="#9AD487"/>
+              <ellipse cx="60" cy="60" rx="38" ry="32" fill="#A8DC92"/>
+              <ellipse cx="48" cy="56" rx="4" ry="5" fill="#24352A"/>
+              <ellipse cx="72" cy="56" rx="4" ry="5" fill="#24352A"/>
+              <ellipse cx="40" cy="66" rx="5" ry="3" fill="#F6A8B8" opacity="0.8"/>
+              <ellipse cx="80" cy="66" rx="5" ry="3" fill="#F6A8B8" opacity="0.8"/>
+              <path d="M53 66 Q60 73 67 66" stroke="#24352A" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+            </svg>
+            <p>미생물이<br>건강하게 활동하고 있어요!</p>
+            <span class="pill">정상 상태</span>
+          </div>
+          <div class="tiles">
+            <div class="tile"><span>🌡 심부 온도</span><b>42.3<small>℃</small></b></div>
+            <div class="tile"><span>☁ CO₂ 농도</span><b>820<small>ppm</small></b></div>
+            <div class="tile"><span>💧 부패 가스</span><b>0.04<small>ppm</small></b></div>
+            <div class="tile"><span>⚡ 오늘 사용 전력</span><b>0.12<small>kWh</small></b></div>
+          </div>
+          <div class="tabbar"><span class="on">🏠</span><span>📊</span><span>🔔</span><span>👤</span></div>
+        </div></div>
+        <span>① 홈 — 반려 미생물 + 실시간 센서값</span>
+      </div>
+
+      <!-- 이상 알림 -->
+      <div class="mock-item">
+        <div class="phone"><div class="screen">
+          <div class="status-bar"><span>9:41</span><span>▂▄▆ ▮</span></div>
+          <div class="app-top">알림<i>⚙</i></div>
+          <div class="hero-pet">
+            <svg viewBox="0 0 120 100" width="90" height="75" aria-hidden="true">
+              <path d="M60 24 C56 16 48 16 42 20 C48 23 54 24 60 24 Z" fill="#B9C98A"/>
+              <path d="M60 24 C64 15 72 14 78 18 C72 22 66 24 60 24 Z" fill="#C8D69B"/>
+              <ellipse cx="60" cy="62" rx="38" ry="30" fill="#C9D9A0"/>
+              <path d="M43 55 L53 58" stroke="#24352A" stroke-width="2.5" stroke-linecap="round"/>
+              <path d="M77 55 L67 58" stroke="#24352A" stroke-width="2.5" stroke-linecap="round"/>
+              <path d="M52 72 Q60 66 68 72" stroke="#24352A" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+              <path d="M86 42 Q90 50 86 54 Q82 50 86 42 Z" fill="#7FB7E8"/>
+            </svg>
+            <p>숨쉬기가 조금 힘들어요</p>
+            <span class="pill warn">부패 의심 · 사전 경고</span>
+          </div>
+          <div class="msg">
+            <b>📝 한 줄 진단</b>
+            CO₂ 상승이 멈추고 부패 가스가 늘고 있어요. 수분이 많고 산소가 부족한 것 같아요.
+          </div>
+          <div class="msg">
+            <b>✅ 이렇게 해 주세요</b>
+            <ol>
+              <li>오늘은 음식물 투입을 쉬어 주세요</li>
+              <li>물기 많은 음식은 짜서 넣어 주세요</li>
+              <li>교반을 자동으로 늘렸어요</li>
+            </ol>
+          </div>
+          <div class="tabbar"><span>🏠</span><span>📊</span><span class="on">🔔</span><span>👤</span></div>
+        </div></div>
+        <span>② 이상 알림 — 사멸 전 경고 + 해결책</span>
+      </div>
+
+      <!-- 전력 리포트 -->
+      <div class="mock-item">
+        <div class="phone"><div class="screen">
+          <div class="status-bar"><span>9:41</span><span>▂▄▆ ▮</span></div>
+          <div class="app-top">전력 리포트<i>⚙</i></div>
+          <div class="tiles">
+            <div class="tile"><span>히터 가동</span><b>5.1<small>시간/일</small></b></div>
+            <div class="tile"><span>절전 모드</span><b>18.9<small>시간/일</small></b></div>
+          </div>
+          <div class="mini-chart">
+            <b style="font-size: 0.75rem;">최근 7일 히터 전력 (Wh)</b>
+            <svg viewBox="0 0 200 110" role="img" aria-label="최근 7일 히터 전력 막대 그래프 예시">
+              <line x1="8" y1="96" x2="196" y2="96" stroke="#D6E2D8"/>
+              <g fill="#CBD5CE">
+                <rect x="14" y="20" width="9" height="76" rx="2"/><rect x="41" y="20" width="9" height="76" rx="2"/><rect x="68" y="20" width="9" height="76" rx="2"/><rect x="95" y="20" width="9" height="76" rx="2"/><rect x="122" y="20" width="9" height="76" rx="2"/><rect x="149" y="20" width="9" height="76" rx="2"/><rect x="176" y="20" width="9" height="76" rx="2"/>
+              </g>
+              <g fill="#4CAF6E">
+                <rect x="24" y="56" width="9" height="40" rx="2"/><rect x="51" y="62" width="9" height="34" rx="2"/><rect x="78" y="50" width="9" height="46" rx="2"/><rect x="105" y="64" width="9" height="32" rx="2"/><rect x="132" y="58" width="9" height="38" rx="2"/><rect x="159" y="66" width="9" height="30" rx="2"/><rect x="186" y="60" width="9" height="36" rx="2"/>
+              </g>
+              <g font-size="8" fill="#6B7C70" text-anchor="middle">
+                <text x="24" y="106">월</text><text x="51" y="106">화</text><text x="78" y="106">수</text><text x="105" y="106">목</text><text x="132" y="106">금</text><text x="159" y="106">토</text><text x="186" y="106">일</text>
+              </g>
+            </svg>
+            <div class="legend"><span><i style="background:#CBD5CE"></i>24시간 가동 시</span><span><i style="background:#4CAF6E"></i>Oink 제어</span></div>
+          </div>
+          <div class="msg">
+            <b>⚡ 이번 주 아낀 전력</b>
+            INA219로 실제 측정한 히터 전력 기준으로 계산해요.
+          </div>
+          <div class="tabbar"><span>🏠</span><span class="on">📊</span><span>🔔</span><span>👤</span></div>
+        </div></div>
+        <span>③ 전력 리포트 — 실측 전력 비교</span>
+      </div>
+    </div>
+    <p class="note" style="text-align: center;">※ 앱 화면은 디자인 목업이며, 표시된 숫자와 그래프는 화면 구성을 보여주기 위한 예시 값입니다.</p>
+  </section>
+
+  <!-- SECTION 04: PROJECT DETAILS -->
+  <section class="glass-card" id="section-arch">
+    <div class="section-title-wrap">
+      <span class="section-num">04</span>
+      <h2>프로젝트 상세 설명 (Project Details)</h2>
+    </div>
+
+    <p class="lead">
+      본 시스템은 <b>미생물 자율 관리</b>와 <b>히터 정밀 발열 제어</b>를 모바일 앱과 연동하여, 사용자의 관리에 대한 부담을 줄이고 미생물 가전으로의 진입장벽을 획기적으로 낮춥니다.
+    </p>
+
+    <div class="self-control">
+      🛠️ <b>자체 제어 기능</b> — 앱은 상태 확인과 알림을 담당할 뿐, 실제 제어는 기기가 스스로 수행합니다. ESP32-S3가 센서값을 직접 판단해 <b>히터 ON/OFF · 절전 모드 전환 · 교반 모터 구동 · 과열/과전류 시 전원 차단</b>까지 자체적으로 제어하므로, 사용자가 조작하지 않아도 미생물에게 최적의 환경이 유지됩니다.
+    </div>
+
+    <!-- 4.1 -->
+    <div class="arch-step">
+      <div class="arch-header">
+        <div class="arch-title"><span>① 미생물 자율 관리 기능</span></div>
+        <span class="arch-badge badge-pink">Sensing · On-Device AI · App</span>
+      </div>
+      <div class="arch-content">
+        정밀 센서로 미생물이 유기물을 분해할 때 방출하는 <b>CO₂ 호흡 대사량</b>과 <b>부패 가스</b>를 정밀 측정하고, 온디바이스 AI가 분해 활성도를 실시간으로 추정·분석합니다.
+
+        <div class="group-label parts">사용 부품 (하드웨어 · AI)</div>
+        <div class="sensor-list">
+          <div class="sensor-item">
+            <b>CM1106S4 (NDIR 방식 CO₂ 센서)</b>
+            미생물의 CO₂ 호흡 대사량 정밀 측정
+          </div>
+          <div class="sensor-item">
+            <b>MQ-136 (부패 악취 센서)</b>
+            유기물 부패 시 발생하는 부패 가스 측정
+          </div>
+          <div class="sensor-item">
+            <b>ESP32-S3 (메인 제어장치)</b>
+            하드웨어 전용 통신 포트로 센서 데이터 고속 수집
+          </div>
+          <div class="sensor-item">
+            <b>TensorFlowLite_ESP32</b>
+            기기 내부에서 작동하는 초경량 온디바이스 AI 모델
+          </div>
+        </div>
+
+        <div class="group-label steps">동작 순서</div>
+        <div class="flow">
+          <div class="flow-step"><b>1. 측정</b>CO₂ · 부패 가스 정밀 측정</div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-step"><b>2. 수집·전송</b>ESP-NOW로 게이트웨이 보드에 수집, JSON 정돈 후 Wi-Fi STA·MQTT 통합 전송</div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-step"><b>3. AI 분석</b>분해 활성도 실시간 추정·분석</div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-step"><b>4. 알림·해결책</b>기준치 이탈 시 스마트폰 알림으로 최적 해결책 즉시 안내</div>
+        </div>
+
+        <div class="group-label app">사용자 앱 기능</div>
+        <div class="apk-grid">
+          <div class="apk-card app-card">
+            <div class="apk-card-title">🔔 사전 방지 알림</div>
+            <div class="apk-card-desc">측정값이 기준치를 벗어나면 미생물 상태 이상으로 판단, 실시간 앱 통신으로 해결책을 안내하여 미생물 사멸 위험을 사전에 방지</div>
+          </div>
+          <div class="apk-card app-card">
+            <div class="apk-card-title">👾 반려 미생물 캐릭터 UI</div>
+            <div class="apk-card-desc">모션 애니메이션 엔진(<b>Rive</b> 라이브러리)으로 미생물 상태에 따른 표정과 움직임을 표현, 디지털 취약계층도 직관적으로 기기 상태 인지</div>
+          </div>
+          <div class="apk-card app-card">
+            <div class="apk-card-title">📝 한 줄 요약 진단 카드</div>
+            <div class="apk-card-desc">LLM을 사용하지 않고, 센서값과 AI 판단 결과를 규칙 기반 템플릿으로 조합해 현재 상태를 한 줄로 요약 — 가볍고 결과가 일관됨</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4.2 -->
+    <div class="arch-step">
+      <div class="arch-header">
+        <div class="arch-title"><span>② 히터 정밀 발열 제어 기능</span></div>
+        <span class="arch-badge badge-yellow">Core Temp · Power Saving</span>
+      </div>
+      <div class="arch-content">
+        미생물 내부에 삽입되는 <b>심부 온도 센서(DS18B20)</b>를 활용하여, 단순히 표면 공기가 아닌 <b>미생물 실효 영역의 심부 온도</b>를 직접 측정합니다.
+
+        <div class="group-label parts">사용 부품</div>
+        <div class="sensor-list">
+          <div class="sensor-item">
+            <b>DS18B20 (심부 온도 센서)</b>
+            미생물 내부에 삽입해 실효 영역의 심부 온도 측정
+          </div>
+          <div class="sensor-item">
+            <b>INA219 (전력 측정 센서)</b>
+            히터·모터에 흐르는 전류를 읽어 실시간 소비 전력 측정
+          </div>
+          <div class="sensor-item">
+            <b>ESP32-S3 (메인 제어장치)</b>
+            온도 변화를 판단하고 히터 전원을 직접 켜고 끔
+          </div>
+        </div>
+
+        <div class="group-label steps">동작 순서 (단계별 사용 라이브러리)</div>
+        <div class="flow">
+          <div class="flow-step">
+            <b>1. 심부 온도 측정</b>미생물 내부 온도를 주기적으로 읽고 변화율(dT/dt)을 계산
+            <span class="lib"><code>OneWire</code> <code>DallasTemperature</code> DS18B20 센서값을 읽어오는 라이브러리</span>
+          </div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-step">
+            <b>2. 소비 전력 확인</b>히터·모터가 지금 실제로 쓰는 전력을 실시간 모니터링
+            <span class="lib"><code>Adafruit_INA219</code> INA219 센서로 전력값을 읽어오는 라이브러리</span>
+          </div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-step">
+            <b>3. 자가발열 감지</b>히터를 꺼도 온도가 유지·상승하면 미생물이 스스로 열을 내는 '자가발열' 구간으로 판단
+          </div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-step">
+            <b>4. 절전 모드 실행</b>정해진 시간 간격으로 히터를 켜고 끄며 가동 시간을 줄여 히터 전력을 제어
+            <span class="lib"><code>Ticker</code> <code>esp_timer</code> 히터 ON/OFF 주기를 정확히 맞춰주는 타이머 라이브러리</span>
+          </div>
+        </div>
+
+        <p style="margin-top: 0.9rem;">
+          이를 통해 미생물 활동에 최적화된 온도를 정밀하게 유지하면서 <b>불필요한 히터 가동을 차단</b>하여 기존 대비 소비 전력을 크게 절약할 수 있습니다.
+        </p>
+      </div>
+    </div>
+
+    <!-- 4.3 -->
+    <div class="arch-step">
+      <div class="arch-header">
+        <div class="arch-title"><span>③ 분산 엣지-클라우드 연동 구조</span></div>
+        <span class="arch-badge badge-mint">Network · Hardware Stability</span>
+      </div>
+      <div class="arch-content">
+        외부 인터넷이 끊겨도 히터 제어가 멈추지 않도록 <b>보드 간 내부 통신</b>과 <b>외부 클라우드 통신</b>을 분리한 <b>분산 엣지-클라우드 연동 구조</b>를 확립하였습니다.
+
+        <div class="apk-grid edge-grid">
+          <div class="apk-card">
+            <div class="apk-card-title">📡 보드 간 통신 (ESP-NOW)</div>
+            <div class="apk-card-desc">기기 내부 보드끼리는 <b>ESP-NOW 무선 직결 프로토콜</b>로 교신. 공유기나 Wi-Fi 비밀번호 없이 1:1로 <b>1ms(0.001초)</b> 만에 초고속 데이터 교환</div>
+          </div>
+          <div class="apk-card">
+            <div class="apk-card-title">🔗 단일 엣지 게이트웨이</div>
+            <div class="apk-card-desc">보드 3대 중 <b>1대만 게이트웨이</b> 역할 수행. 외부 Wi-Fi 감지 시 <b>Wi-Fi STA(Station) 모드</b>로 접속하여 <b>MQTT 프로토콜</b>로 데이터 발행</div>
+          </div>
+          <div class="apk-card">
+            <div class="apk-card-title">☁️ Railway · Vercel 클라우드</div>
+            <div class="apk-card-desc">상시 호스팅 플랫폼 Railway의 <b>Aedes MQTT 브로커</b>와 <b>Node.js</b> 백엔드를 거쳐 <b>Vercel React</b> 웹 대시보드로 실시간 스트리밍, 어디서든 모바일·PC로 모니터링</div>
+          </div>
+          <div class="apk-card">
+            <div class="apk-card-title">🛡️ 로컬 자율 제어 (Edge Autonomy)</div>
+            <div class="apk-card-desc">집 공유기 전원이 꺼지거나 인터넷이 단선되어도 ESP-NOW 기반 내부 센서-히터 제어 루프는 <b>100% 정상 작동</b>하여 미생물 사멸 방지</div>
+          </div>
+        </div>
+
+        <div class="group-label steps">데이터 흐름</div>
+        <div class="flow">
+          <div class="flow-step"><b>ESP-NOW</b>보드 간 1ms 무선 직결 (기기 내부)</div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-step"><b>Wi-Fi STA · MQTT</b>단일 엣지 게이트웨이가 데이터 발행</div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-step"><b>Railway</b>Aedes MQTT 브로커 + Node.js</div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-step"><b>Vercel</b>React 웹 대시보드 (모바일·PC)</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 05: ALGORITHM -->
+  <section class="glass-card" id="section-algo">
+    <div class="section-title-wrap">
+      <span class="section-num">05</span>
+      <h2>통합 제어 알고리즘 (Control Algorithm)</h2>
+    </div>
+
+    <p class="lead">
+      센서 수집 · AI 분석 · 정밀 제어 · 물리 안전 · 앱/클라우드 연동의 4단계 Task가 하나의 피드백 루프로 반복됩니다. 물리 안전 제어는 앱·클라우드 연결 여부와 무관하게 항상 우선 실행됩니다.
+    </p>
+
+    <div class="grid-2" style="margin-bottom: 1.25rem;">
+      <div class="info-card">
+        <h3 style="color: #2F7CC2;">① 센서 수집 및 데이터 검증</h3>
+        <p>CO₂ · 악취 가스 · 심부 온도 · 소비전력을 수집하고 필터링·누락·고정값·비정상 범위를 검사한 뒤 JSON으로 생성합니다.</p>
+      </div>
+      <div class="info-card">
+        <h3 style="color: #5A8F4E;">② AI 미생물 분석 및 히터·모터 제어</h3>
+        <p>온디바이스 AI가 분해 활성도와 부패 위험을 판단하고, 목표 온도와 심부 온도를 비교해 자가발열 시 절전 모드로 전환합니다.</p>
+      </div>
+      <div class="info-card">
+        <h3 style="color: #C47A35;">③ 물리 안전 상태 점검</h3>
+        <p>과전류·과열 시 즉시 전원 차단, 센서 이상 시 격리 후 추정 제어, 구동부 이상 시 정지·복구, 통신 단절 시 NVS 기반 로컬 자율 제어를 유지하며, 모든 점검 결과를 기록해 로컬 제어에 반영합니다.</p>
+      </div>
+      <div class="info-card">
+        <h3 style="color: #7552A8;">④ 앱·클라우드 연동</h3>
+        <p>점검 결과를 1~5분 주기로 서버·웹 대시보드에 전송하고, 캐릭터 상태 반영 및 필요 시 푸시 알림을 보냅니다.</p>
+      </div>
+    </div>
+
+    <figure class="diagram">
+      <img src="/.netlify/images?url=/assets/algorithm-flow.png&w=1600&fm=webp" alt="AI 기반 자율 미생물 관리 시스템 통합 제어 알고리즘 순서도" loading="lazy" width="4800" height="8000" onerror="this.onerror=null;this.src='assets/algorithm-flow.png'">
+      <figcaption>AI 기반 자율 미생물 관리 시스템 — 통합 제어 알고리즘 순서도</figcaption>
+    </figure>
+
+    <h3 class="sub-title">🧠 AI가 실제로 하는 일</h3>
+    <p class="lead" style="margin-bottom: 0.9rem;">
+      AI의 역할은 <b>"지금 미생물이 어떤 상태인가"를 판정하는 것</b>입니다. 센서값 하나만 보면 헷갈리는 상황(예: CO₂가 낮은 게 분해 완료인지, 미생물이 약해진 건지)을 여러 센서의 <b>최근 흐름</b>을 함께 보고 구분합니다.
+    </p>
+    <div class="io-row">
+      <div class="io-box">
+        <h4>입력 (최근 30~60분 흐름)</h4>
+        <ul>
+          <li>CO₂ 증가 속도 (ppm/분)</li>
+          <li>심부 온도와 변화율 (dT/dt)</li>
+          <li>부패 가스 농도 추세</li>
+          <li>히터 ON 비율 · 소비 전력</li>
+          <li>마지막 투입 후 경과 시간</li>
+        </ul>
+      </div>
+      <div class="io-arrow">→</div>
+      <div class="io-box">
+        <h4>모델 (ESP32-S3 안에서 실행)</h4>
+        <ul>
+          <li>TensorFlow Lite 초경량 분류 모델</li>
+          <li>시제품 운전 로그로 학습 (투입·과습·과열 상황 라벨링)</li>
+          <li>인터넷 없이 기기 안에서 수 밀리초 안에 추론</li>
+        </ul>
+      </div>
+      <div class="io-arrow">→</div>
+      <div class="io-box">
+        <h4>출력 → 동작</h4>
+        <ul>
+          <li><b>활발</b> → 자가발열 활용, 히터 듀티 낮춤</li>
+          <li><b>활성 저하</b> → 목표 온도 유지 + 알림</li>
+          <li><b>부패 의심</b> → 교반 늘림 + 해결책 알림</li>
+          <li><b>분해 완료</b> → 절전 대기</li>
+        </ul>
+      </div>
+    </div>
+    <div class="self-control">
+      🛡️ <b>AI가 하지 않는 것</b> — 과열·과전류 차단 같은 <b>안전 판단은 AI에 맡기지 않습니다.</b> 정해진 규칙과 하드웨어 차단 장치(서모스탯·퓨즈)가 항상 우선하며, AI 판정이 틀려도 위험한 상황으로 이어지지 않게 설계합니다.<br>
+      📏 <b>AI를 쓰는 이유를 숫자로 확인</b> — 같은 데이터로 단순 규칙(기준치 비교)과 AI 모델의 상태 판정 정확도를 비교하고, AI가 더 나을 때만 채택합니다.
+    </div>
+  </section>
+
+  <!-- SECTION 06: VERIFICATION -->
+  <section class="glass-card" id="section-verify">
+    <div class="section-title-wrap">
+      <span class="section-num">06</span>
+      <h2>절전 효과 검증 실험 (Verification Plan)</h2>
+    </div>
+
+    <p class="lead">
+      "전력을 아낀다"는 주장을 추정이 아닌 <b>실측</b>으로 보여주기 위해, 전력 측정 센서(<b>INA219</b>)로 히터가 실제로 쓴 전력을 기록하고 기존 방식과 나란히 비교합니다.
+    </p>
+
+    <div class="exp-grid">
+      <div class="exp-arm a">
+        <h4><span>A.</span> 기존 방식 (비교군)</h4>
+        공기 온도 기준으로 설정 온도를 유지하며 히터를 24시간 운전합니다. 시중 제품의 동작 방식을 재현합니다.
+      </div>
+      <div class="exp-arm b">
+        <h4><span>B.</span> Oink 제어 (실험군)</h4>
+        심부 온도·CO₂ 기반으로 자가발열 구간과 분해 완료를 감지해 히터를 줄입니다.
+      </div>
+    </div>
+
+    <div class="grid-2" style="margin-top: 1rem;">
+      <div class="info-card">
+        <h3 style="color: var(--purple-accent);">🔬 실험 방법</h3>
+        <ul>
+          <li>같은 크기의 단열 챔버 2개에 <b>같은 미생물 배양토와 같은 양의 음식물</b>을 넣습니다.</li>
+          <li>두 챔버 모두 <b>INA219</b>로 히터 전압·전류를 1초마다 읽어 전력을 누적(Wh)합니다.</li>
+          <li>같은 시간 동안 동시에 운전하고, 투입 시점도 맞춥니다.</li>
+          <li>INA219 값은 별도 전력계(멀티미터)로 교차 확인해 측정 오차를 함께 표기합니다.</li>
+        </ul>
+      </div>
+      <div class="info-card">
+        <h3 style="color: var(--pink-primary);">📊 비교 지표</h3>
+        <ul>
+          <li><b>누적 히터 전력량 (Wh)</b> — 절전 효과의 핵심 지표</li>
+          <li><b>히터 가동률 (%)</b> — 하루 중 히터가 켜져 있던 시간</li>
+          <li><b>심부 온도 유지</b> — 적정 온도 범위를 벗어난 시간</li>
+          <li><b>분해 활성도(CO₂)</b> — 전기를 아끼느라 미생물 활동이 떨어지지 않았는지 확인</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="hero-box" style="margin-top: 1.25rem;">
+      📈 결과는 앱의 <b>전력 리포트 화면</b>과 대회 현장 대시보드에서 두 챔버의 누적 전력 그래프로 실시간 공개합니다. <span class="pending">실험 예정 · 결과 미측정</span>
+    </div>
+  </section>
+
+  <!-- SECTION 07: EFFECT & BUSINESS -->
+  <section class="glass-card" id="section-effect">
+    <div class="section-title-wrap">
+      <span class="section-num">07</span>
+      <h2>기대 효과 & 차별성 (Impact & Differentiation)</h2>
+    </div>
+
+    <div class="grid-3">
+      <div class="rev-card rev-1">
+        <span class="rev-badge">사용자 가치</span>
+        <h3>관리 부담 제로</h3>
+        <p>복잡한 관리는 인공지능과 하드웨어가 스스로 수행하고, 사용자는 <b>직관적인 캐릭터 교감</b>만으로 가사 노동의 자유를 누립니다.</p>
+      </div>
+
+      <div class="rev-card rev-2">
+        <span class="rev-badge">원가 경쟁력</span>
+        <h3>최소 5만 원 상당</h3>
+        <p>보드, 히터, 센서를 포함한 <b>최소 5만 원 상당</b>의 강력한 원가 경쟁력을 갖추었습니다.</p>
+      </div>
+
+      <div class="rev-card rev-3">
+        <span class="rev-badge">사업화</span>
+        <h3>B2B 초절전 AI 제어 모듈</h3>
+        <p>완제품 가전 제조사 대상 <b>B2B 초절전 AI 제어 모듈 라이선싱</b> 및 상용화 진입이 즉시 가능합니다.</p>
+      </div>
+    </div>
+
+    <h3 class="sub-title">🆚 기존 제품과의 차별성</h3>
+    <div class="grid-2">
+      <div class="info-card">
+        <h3 style="color: var(--text-muted);">기존 제품</h3>
+        <ul>
+          <li>단순 <b>무게 감지 센서</b>로 투입된 음식물의 양만 계산</li>
+          <li>미생물 내부가 아닌 <b>공기 온도만</b> 측정해 실제 상태와 차이가 큼</li>
+          <li>미생물 상태를 알 수 있는 방법이 없어, <b>미생물이 죽은 뒤에야</b> 문제를 알게 됨</li>
+        </ul>
+      </div>
+      <div class="info-card" style="border-color: rgba(232, 93, 136, 0.4);">
+        <h3 style="color: var(--pink-primary);">Oink 시스템</h3>
+        <ul>
+          <li><b>심부 온도 센서</b>로 미생물이 실제로 있는 곳의 온도를 측정</li>
+          <li><b>CO₂ 센서</b>로 미생물의 호흡(분해 활성도)을 직접 확인</li>
+          <li><b>가스 센서</b>로 부패 징후를 잡아, <b>미생물이 죽기 전에</b> 상태를 파악하고 해결책 안내</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="kpi-table-wrap" style="margin-top: 1.5rem;">
+      <table class="kpi-table">
+        <thead>
+          <tr>
+            <th>구분</th>
+            <th>기존 미생물 음식물 처리기</th>
+            <th>AI 기반 자율 미생물 관리 시스템</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>미생물 관리</td>
+            <td>사용자에게 온전히 의존</td>
+            <td>CO₂·부패 가스 기반 온디바이스 AI 진단, 기준치 이탈 시 해결책 알림</td>
+          </tr>
+          <tr>
+            <td>투입·분해 파악</td>
+            <td>무게 감지 센서로 투입량만 계산</td>
+            <td>CO₂ 발생 속도로 실제 분해 진행과 완료 시점 파악</td>
+          </tr>
+          <tr>
+            <td>미생물 상태</td>
+            <td>알 방법 없음, 사멸 후에야 인지</td>
+            <td>활발 · 활성 저하 · 부패 의심 · 분해 완료를 구분해 사멸 전 경고</td>
+          </tr>
+          <tr>
+            <td>온도 측정</td>
+            <td>공기 온도·표면 온도</td>
+            <td>DS18B20 심부 온도 및 변화율(dT/dt) 추적</td>
+          </tr>
+          <tr>
+            <td>히터 제어</td>
+            <td>내부 온도와 무관한 24시간 가동</td>
+            <td>자가발열 구간 감지 시 절전 모드, INA219 실시간 전력 모니터링</td>
+          </tr>
+          <tr>
+            <td>상태 확인</td>
+            <td>뚜껑을 열어 직접 확인</td>
+            <td>반려 미생물 캐릭터 UI(Rive) + 웹 대시보드(어디서든 접속)</td>
+          </tr>
+          <tr>
+            <td>통신 장애</td>
+            <td>—</td>
+            <td>로컬 자율 제어(Edge Autonomy) 100% 유지</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="hero-box" style="margin-top: 1.5rem;">
+      🏠 본 시스템은 차세대 <b>스마트 홈 에코 가전</b>의 새로운 기준을 제시합니다.
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <p>AI 기반 자율 미생물 관리 시스템 · 서비스 제안서 · 팀 오잉크</p>
+    <p style="margin-top: 0.3rem; opacity: 0.7;">미생물 자율 관리 × 히터 정밀 발열 제어 × 분산 엣지-클라우드 연동</p>
+  </footer>
+
+</div>
+
+</body>
+</html>

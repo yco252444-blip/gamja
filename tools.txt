@@ -1,0 +1,33 @@
+스킬: xiao-esp32s3
+언제 쓰이나: ESP32S3, arduino-cli, 업로드, 시리얼, COM 포트 관련 작업 전부
+이 프로젝트에서: 거의 항상 쓰입니다. 센서, 릴레이, MQTT 펌웨어가 모두 해당하고, DTR 리셋 함정과
+PSRAM 플래그 내용이 CLAUDE.md 규칙과 같은 방향입니다.
+────────────────────────────────────────
+스킬: xiao-webcam-ap
+언제 쓰이나: 공유기 없는 AP 모드의 카메라 웹앱
+이 프로젝트에서: 카메라를 쓸 때만입니다. MK1 센서 목록에 카메라가 없고, Oink
+camera/README.md에서만 카메라가 나옵니다.
+────────────────────────────────────────
+스킬: xiao-webcam-sta
+언제 쓰이나: 공유기(STA) 모드의 카메라 웹앱
+이 프로젝트에서: 위와 같습니다.
+────────────────────────────────────────
+스킬: xiao-edgeimpulse-train
+언제 쓰이나: Edge Impulse 학습과 배포
+이 프로젝트에서: 카메라나 오디오 등의 TinyML을 쓸 때만입니다. MK1의 온도 회귀 모델은
+ai-training/의 Python 학습(RandomForest) 계열이라, 이 스킬로 학습하는 흐름은 아닙니다.
+
+
+# 설치 (git clone 후 각자 따로 설치)
+
+# headroom (Python 3.13 필요, uv 먼저 설치해야 함 - 없으면 아래 uv tool install이 바로 실패함)
+# uv 없으면 먼저: winget install astral-sh.uv  (또는 irm https://astral.sh/uv/install.ps1 | iex)
+gh repo clone headroomlabs-ai/headroom
+uv tool install --python 3.13 "headroom-ai[all]"
+# Claude Code 있는 사람만 바로 사용 가능: headroom wrap claude
+# Orca/Antigravity(agy) 쓰는 2명은 agy가 wrap 지원 목록에 없어서 headroom proxy로 별도 연동 필요(미검증, 우선순위 낮음)
+
+# 스킬
+npx skills add https://github.com/mattpocock/skills --skill grill-me
+npx skills add https://github.com/graphify-labs/graphify --skill graphify
+npx skills add https://github.com/dietrichgebert/ponytail --skill ponytail

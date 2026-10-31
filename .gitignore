@@ -1,0 +1,41 @@
+node_modules/
+dist/
+.env
+camera/build/
+__pycache__/
+*.log
+arduino/data/
+arduino/downloads/
+arduino/user/
+.tools/
+supabase/.temp/
+# stale pre-2026-07-27 duplicate, .git already extracted from it - safe to
+# delete manually once Windows releases its lock (harness cwd quirk)
+githubinlocal/
+
+# --- secrets (통일 규칙) ---
+.env.*
+!.env.example
+**/secrets.h
+**/credentials.h
+serviceAccountKey.json
+*serviceAccount*.json
+*.pem
+*.key
+
+# --- 2026-09-22 팀 저장소 세팅 ---
+.venv/
+# headroom은 자체 .git이 있는 중첩 저장소라 일반 파일로 추적하면 안 됨(서브모듈은 안 씀, 그냥 제외)
+headroom/
+.vercel/
+
+# 개인 대화 캡처 (개인정보 보호)
+KakaoTalk_*
+kakao_screenshot*
+
+# graphify/grill-me/ponytail: 외부 설치 도구(심볼릭 링크 + 실제 소스). repo에 안 넣고
+# 각자 tools.txt의 `npx skills add`로 설치한다 (팀장이 직접 안내).
+.claude/skills/graphify
+.claude/skills/grill-me
+.claude/skills/ponytail
+.agents/skills/
